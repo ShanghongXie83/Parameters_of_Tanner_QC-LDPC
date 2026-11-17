@@ -1,13 +1,14 @@
-"""Computer certificates for Proposition 26, Lemma 27, and Theorem 30.
+"""Computer certificates for Proposition 27, Lemma 28, and Theorem 31.
 
 Run python verify.py to generate results.json.
 Run python verify.py --check to recompute and compare all certificates.
-Dependencies: numpy and sympy.
+Dependencies: NumPy >= 2.0 and SymPy.
+Verified with Python 3.12.9, NumPy 2.4.5, and SymPy 1.14.0.
 
 The program uses h=j+1 and delta=k-j. The integers m_u are the root-
-multiplicity differences of Lemma 27, represented modulo p by q(U).
+multiplicity differences of Lemma 28, represented modulo p by q(U).
 The PDF proof and result interpretation are in
-Supplementary_Material_for_Proposition_26.pdf.
+Supplementary_Material_for_Proposition_27.pdf.
 """
 from collections import Counter, deque
 from functools import lru_cache
@@ -111,7 +112,7 @@ def moment_screen():
                         multiset_count += 1
                         by_delta[delta] += 1
                         values = pos + tuple(-x for x in neg) + (0,) * (k - len(pos) - len(neg))
-                        # Lemma 27: integer square-sum bound and parity.
+                        # Lemma 28: integer square-sum bound and parity.
                         square_sum = sum(x*x for x in values)
                         assert 0 < square_sum <= j*j+3*j+4
                         assert square_sum % 2 == 0
@@ -296,7 +297,7 @@ def coefficient_check():
 
 
 def generate():
-    result = {'scope': 'Computer certificates for Proposition 26, Lemma 27, and Theorem 30. Complete proof and result interpretation: Supplementary_Material_for_Proposition_26.pdf.', 'proof_references': {'support_proposition': 26, 'coset_lemma': 8, 'even_direction_lemma': 9, 'multiplicity_moment_lemma': 27, 'neighboring_order_theorem': 30, 'girth_bound_proposition': 16, 'critical_support_theorem': 24, 'supplement': 'Supplementary_Material_for_Proposition_26.pdf'}, 'symbolic_checks': symbolic_checks()}
+    result = {'scope': 'Computer certificates for Proposition 27, Lemma 28, and Theorem 31. Complete proof and result interpretation: Supplementary_Material_for_Proposition_27.pdf.', 'proof_references': {'support_proposition': 27, 'coset_lemma': 8, 'even_direction_lemma': 9, 'multiplicity_moment_lemma': 28, 'neighboring_order_theorem': 31, 'girth_bound_proposition': 17, 'critical_support_theorem': 25, 'supplement': 'Supplementary_Material_for_Proposition_27.pdf'}, 'symbolic_checks': symbolic_checks()}
     result['moment_screen'] = moment_screen()
     print('moments', result['moment_screen']['parameter_pairs'],
           result['moment_screen']['integer_multisets'],
@@ -352,9 +353,10 @@ def main():
     serialized = json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True)+'\n'
     if args.check and saved != json.loads(serialized):
         raise SystemExit('FAILED: regenerated results differ from results.json; the supplied file was preserved.')
-    destination.write_text(serialized, encoding='utf-8')
     if args.check:
         print('All regenerated results agree with results.json.', flush=True)
+    else:
+        destination.write_text(serialized, encoding='utf-8')
     print('All checks passed. Output: results.json', flush=True)
 
 

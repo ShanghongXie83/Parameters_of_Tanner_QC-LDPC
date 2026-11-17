@@ -5322,15 +5322,15 @@
   ],
   "proof_references": {
     "coset_lemma": 8,
-    "critical_support_theorem": 24,
+    "critical_support_theorem": 25,
     "even_direction_lemma": 9,
-    "girth_bound_proposition": 16,
-    "multiplicity_moment_lemma": 27,
-    "neighboring_order_theorem": 30,
-    "supplement": "Supplementary_Material_for_Proposition_26.pdf",
-    "support_proposition": 26
+    "girth_bound_proposition": 17,
+    "multiplicity_moment_lemma": 28,
+    "neighboring_order_theorem": 31,
+    "supplement": "Supplementary_Material_for_Proposition_27.pdf",
+    "support_proposition": 27
   },
-  "scope": "Computer certificates for Proposition 26, Lemma 27, and Theorem 30. Complete proof and result interpretation: Supplementary_Material_for_Proposition_26.pdf.",
+  "scope": "Computer certificates for Proposition 27, Lemma 28, and Theorem 31. Complete proof and result interpretation: Supplementary_Material_for_Proposition_27.pdf.",
   "status": "passed",
   "summary": {
     "boundary_dimension": 29,

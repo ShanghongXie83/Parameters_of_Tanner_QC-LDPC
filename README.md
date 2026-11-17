@@ -1,67 +1,66 @@
-# Supplementary Material for Proposition 26
+# Supplementary Material for Proposition 27
 
-This package accompanies Proposition 26 of *Exact Parameter Classes and Bounds for Tanner (j,k) QC-LDPC Codes*. It contains the complete proof of the proposition and the computer certificates used in Theorem 30.
+This package contains the complete proof of Proposition 27 and the computer certificates used in Theorem 31. Its notation, hypotheses, and result numbers agree with the accompanying manuscript.
 
 ## Files
 
 | File | Contents |
 | --- | --- |
-| `Supplementary_Material_for_Proposition_26.pdf` | Proposition 26, its complete proof, and a section explaining the computation output. |
-| `verify.py` | The single verification program. |
-| `results.json` | The complete program output, including the numerical certificates. |
-| `README.md` | Package description and reproduction instructions. |
+| `Supplementary_Material_for_Proposition_27.pdf` | Complete proof of Proposition 27 and interpretation of the computer certificates. |
+| `verify.py` | Exact verification program. |
+| `results.json` | Complete program output and numerical certificates. |
+| `README.md` | File descriptions and reproduction instructions. |
 
-## Correspondence with the paper
+## Correspondence with the manuscript
 
-- Lemma 8: equality of finite product-set cardinalities and the resulting coset structure.
-- Lemma 9: the even-direction bound and the associated Redei-polynomial construction.
-- Proposition 26, parts (i)--(iii): odd column occupancy, the quadratic quotient, and the two root polynomials.
-- Lemma 27: common root-multiplicity and moment constraints, including the square-sum bound.
-- Theorem 30: the minimum-distance bound for neighboring row and column orders.
-- Proposition 16: the girth-based distance bound used at the exceptional prime.
+- Lemma 8: product-set equality and coset structure.
+- Lemma 9: even-direction bound and Redei-polynomial construction.
+- Theorem 25: characterization of supports of Hamming weight 2j.
+- Proposition 27, parts (i)--(iii): odd column occupancy, the quadratic quotient, and the two root polynomials.
+- Lemma 28: root-multiplicity and moment constraints, including the square-sum bound.
+- Theorem 31: d >= 2j+4 for j >= 3 and 1 <= k-j <= min{5,j-1}.
+- Proposition 17: girth-based distance bound used at the exceptional prime.
 
-The PDF recalls the statement of Lemma 9 and its polynomial notation. Its proof is given in the paper. Proposition 26 and its part labels agree with the paper.
+The PDF recalls Lemma 9 and its polynomial notation; the proof of that lemma is in the manuscript. Proposition 27 and its part labels agree with the manuscript.
 
-## Running the verification
+## Reproduction
 
-Install the dependencies:
+The program was verified with Python 3.12.9, NumPy 2.4.5, and SymPy 1.14.0. NumPy 2.0 or later is required for `bitwise_count`.
+
+Install the verified dependency versions:
 
 ```text
-python -m pip install numpy sympy
+python -m pip install numpy==2.4.5 sympy==1.14.0
 ```
 
-Generate the output:
+Generate `results.json` next to the program:
 
 ```text
 python verify.py
 ```
 
-The program writes `results.json` next to itself. To recompute all certificates and compare them with the supplied output, run:
+Recompute all certificates and compare them with the supplied output without modifying it:
 
 ```text
 python verify.py --check
 ```
 
-Use the ordinary Python execution mode so that assertions are enabled. NumPy provides the `bitwise_count` operation used in the full kernel enumeration. The program prints progress and reports successful completion after every check has passed.
+Run without `-O` or `-OO`, so that verification assertions remain enabled. The program reports success only after all checks pass. The boundary-code calculation enumerates all 536870912 kernel vectors in bounded integer-array batches; runtime depends on the machine.
 
-The boundary-code calculation traverses all 536870912 words in bounded integer-array batches. Runtime depends on the machine.
+## Certificates
 
-## Output and proof roles
-
-| Field | Result and use |
+| Output field | Contents and proof role |
 | --- | --- |
-| `status` | Successful completion of the verification. |
-| `proof_references` | The paper's proposition, lemma, and theorem numbers and the supplementary PDF filename. |
+| `status` | Successful completion of all checks. |
+| `proof_references` | Corresponding manuscript result numbers and supplementary PDF filename. |
 | `summary` | Principal counts and conclusions. |
-| `symbolic_checks` | Hessian, coefficient-minor, and conic-restriction identities for Proposition 26, together with the square-sum identity of Lemma 27. |
+| `symbolic_checks` | Hessian, coefficient-minor, and quadratic-restriction identities for Proposition 27, and the square-sum identity for Lemma 28. |
 | `moment_screen` | 69 parameter pairs, 19532 integer multisets, and 43 candidates passing the prime and moment conditions. |
-| `polynomial_screen` | Complete normalized polynomial searches over the three remaining parameter triples. |
-| `boundary_code` | The length-78 binary matrix rank, a kernel basis, the complete weight distribution, and a weight-16 codeword. |
-| `coefficient_check` | The exact exceptional-prime obstruction 1055 = 5*211. |
-| `p211_ball` | All nodes and parent relations of the radius-five tree at (p,j,k) = (211,3,5). |
+| `polynomial_screen` | Complete normalized polynomial searches for the three remaining parameter triples. |
+| `boundary_code` | Binary matrix rank, kernel basis, complete weight distribution, and a weight-16 codeword for the length-78 boundary code. |
+| `coefficient_check` | Exact exceptional-prime obstruction 1055 = 5*211. |
+| `p211_ball` | Nodes and parent relations of the radius-five tree at (p,j,k) = (211,3,5). |
 
-The normalized polynomial searches test 13, 361, and 923521 polynomials for (p,j,k) = (13,4,6), (19,6,9), and (31,10,15), respectively. Only the first case gives matches, namely q(U) = plus or minus 2(U^2-U). Full enumeration of its binary kernel gives minimum distance 16. At the exceptional prime, the tree layers have sizes 1, 3, 12, 24, 96, 192, with zero non-tree edges. These calculations complete the finite branches of Theorem 30.
+The polynomial searches test 13, 361, and 923521 polynomials for (p,j,k) = (13,4,6), (19,6,9), and (31,10,15), respectively. Only the first case gives matches: q(U) = plus or minus 2(U^2-U). Complete binary-kernel enumeration gives minimum distance 16 in that case. At the exceptional prime 211, the radius-five tree layers have sizes 1, 3, 12, 24, 96, 192, with zero non-tree edges.
 
-The final section of the PDF explains each output field, the binary-coordinate encoding, and the deductions used in the proofs. All computations use exact symbolic expressions, integers, rational numbers, and finite-field residues.
-
-Repository: [Supplementary Material for Proposition 26](https://github.com/ShanghongXie83/Paramerters_of_Moore_type_QC-LDPC).
+These calculations certify the finite branches of Theorem 31. The PDF explains the reduction to those branches, the binary-coordinate encoding, and the deductions from the certificates. The calculations use exact symbolic expressions, integers, rational numbers, and finite-field residues.
