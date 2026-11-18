@@ -17,10 +17,10 @@ The supplement uses $J$ and $L$ for the orders of $b$ and $a$, respectively. Par
 
 - Lemma 8: product-set equality and coset structure.
 - Lemma 9: even-direction bound and Redei-polynomial construction.
-- Theorem 25: characterization of supports of Hamming weight 2j.
+- Theorem 25: characterization of supports of Hamming weight $2J$.
 - Proposition 27, parts (i)--(iii): odd column occupancy, the quadratic quotient, and the two root polynomials.
 - Lemma 28: root-multiplicity and moment constraints, including the square-sum bound.
-- Theorem 31: d >= 2j+4 for J >= 3 and 1 <= L-J <= min{5,J-1}.
+- Theorem 31: $d\ge 2J+4$ for $J\ge 3$ and $1\le L-J\le \min\{5,J-1\}$.
 - Proposition 17: girth-based distance bound used at the exceptional prime.
 
 The PDF recalls Lemma 9 and its polynomial notation; the proof of that lemma is in the manuscript. Proposition 27 and its part labels agree with the manuscript.
