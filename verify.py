@@ -2,11 +2,10 @@
 
 Run python verify.py to generate results.json.
 Run python verify.py --check to recompute and compare all certificates.
-Dependencies: NumPy >= 2.0 and SymPy.
-Verified with Python 3.12.9, NumPy 2.4.5, and SymPy 1.14.0.
+Dependencies: NumPy with bitwise_count support and SymPy.
 
-The program uses h=j+1 and delta=k-j. The integers m_u are the root-
-multiplicity differences of Lemma 28, represented modulo p by q(U).
+The program uses h=J+1 and delta=L-J. The integers m_u are the root-
+multiplicity differences of Lemma 28, represented modulo p by q(x).
 The PDF proof and result interpretation are in
 Supplementary_Material_for_Proposition_27.pdf.
 """
@@ -23,14 +22,14 @@ import sympy as sp
 
 def symbolic_checks():
     z, y = sp.symbols('z y', nonzero=True)
-    j = sp.symbols('j', integer=True, positive=True)
-    f = z**j*y-y**(j+1)
+    J = sp.symbols('J', integer=True, positive=True)
+    f = z**J*y-y**(J+1)
     hessian = sp.diff(f,z,2)*sp.diff(f,y,2)-sp.diff(f,z,y)**2
-    expected = -j**2*z**(j-2)*(z**j+(j**2-1)*y**j)
+    expected = -J**2*z**(J-2)*(z**J+(J**2-1)*y**J)
     assert sp.simplify(hessian-expected) == 0
-    f = z**(j+1)-y**(j+1)
+    f = z**(J+1)-y**(J+1)
     hessian = sp.diff(f,z,2)*sp.diff(f,y,2)-sp.diff(f,z,y)**2
-    assert sp.simplify(hessian+j**2*(j+1)**2*z**(j-1)*y**(j-1)) == 0
+    assert sp.simplify(hessian+J**2*(J+1)**2*z**(J-1)*y**(J-1)) == 0
     h, lam = sp.symbols('h lam', nonzero=True)
     matrix = sp.Matrix([[1,0,0],[-lam/h,0,-1/h],[0,-1/h,lam]])
     assert sp.factor(matrix.det()) == -1/h**2
@@ -45,13 +44,13 @@ def symbolic_checks():
     assert sp.expand(bb*bb-aa*cc+dual) == 0
     r1,r2,s1,s2 = sp.symbols('r1 r2 s1 s2')
     assert sp.expand((r1*s2+r2*s1)**2-4*r1*r2*s1*s2-(r1*s2-r2*s1)**2) == 0
-    J, r = sp.symbols('J r', integer=True)
-    merged_square_sum = (J-r+1)**2+r-1+(r+1)**2+J-r-1
-    assert sp.expand(J**2+J+2-merged_square_sum-2*(r-1)*(J-r-1)) == 0
+    h, r = sp.symbols('h r', integer=True)
+    merged_square_sum = (h-r+1)**2+r-1+(r+1)**2+h-r-1
+    assert sp.expand(h**2+h+2-merged_square_sum-2*(r-1)*(h-r-1)) == 0
     return {
-        'common_square_bound_gap': '2*(r-1)*(J-r-1)',
-        'Hessian_of_z_power_j_times_y_minus_y_power_j_plus_one': 'proved symbolically with j indeterminate',
-        'Hessian_of_root_form': 'proved symbolically with j indeterminate',
+        'common_square_bound_gap': '2*(r-1)*(h-r-1)',
+        'Hessian_of_first_root_form': 'proved symbolically with J indeterminate',
+        'Hessian_of_second_root_form': 'proved symbolically with J indeterminate',
         'catalectic_minor': '-1/h**2',
         'tangency_discriminant_equals_negative_dual_form': True,
         'rank_two_restriction_discriminant': True,
@@ -78,9 +77,9 @@ def primitive(p):
     return next(g for g in range(2, p) if all(pow(g, (p - 1) // q, p) != 1 for q in factors))
 
 
-def subgroup(p, k):
-    a = pow(primitive(p), (p - 1) // k, p)
-    return [pow(a, t, p) for t in range(k)]
+def subgroup(p, order):
+    a = pow(primitive(p), (p - 1) // order, p)
+    return [pow(a, t, p) for t in range(order)]
 
 
 @lru_cache(None)
@@ -100,28 +99,28 @@ def moment_screen():
     by_delta = Counter()
     survivors = []
     for delta in range(1, 6):
-        for j in range(max(3, delta + 1), 6 * delta):
+        for J in range(max(3, delta + 1), 6 * delta):
             pair_count += 1
-            k, h = j + delta, j + 1
+            L, h = J + delta, J + 1
             for S in range(1, h + 1):
                 parts = partitions(S, 1, delta)
                 for pos in parts:
                     for neg in parts:
-                        if not h <= len(pos) + len(neg) <= k:
+                        if not h <= len(pos) + len(neg) <= L:
                             continue
                         multiset_count += 1
                         by_delta[delta] += 1
-                        values = pos + tuple(-x for x in neg) + (0,) * (k - len(pos) - len(neg))
+                        values = pos + tuple(-x for x in neg) + (0,) * (L - len(pos) - len(neg))
                         # Lemma 28: integer square-sum bound and parity.
                         square_sum = sum(x*x for x in values)
-                        assert 0 < square_sum <= j*j+3*j+4
+                        assert 0 < square_sum <= J*J+3*J+4
                         assert square_sum % 2 == 0
                         G = 0
-                        for v in range(2, (k - 1) // delta + 1):
+                        for v in range(2, (L - 1) // delta + 1):
                             G = gcd(G, abs(sum(x ** v for x in values)))
                         for p in prime_divisors(G):
-                            if p > 2 * k and (p - 1) % lcm(j, k) == 0:
-                                survivors.append((p, j, k, values))
+                            if p > 2 * L and (p - 1) % lcm(J, L) == 0:
+                                survivors.append((p, J, L, values))
     return {
         'parameter_pairs': pair_count,
         'integer_multisets': multiset_count,
@@ -132,14 +131,14 @@ def moment_screen():
 
 def polynomial_screen(survivors):
     groups = {}
-    for p, j, k, values in survivors:
-        groups.setdefault((p, j, k), set()).add(tuple(sorted(x % p for x in values)))
+    for p, J, L, values in survivors:
+        groups.setdefault((p, J, L), set()).add(tuple(sorted(x % p for x in values)))
     output = []
-    for (p, j, k), targets in sorted(groups.items()):
-        delta = k - j
+    for (p, J, L), targets in sorted(groups.items()):
+        delta = L - J
         assert all(0 in target for target in targets)
-        A = subgroup(p, k)
-        # q(1)=0: q(X)=sum_{i=2}^delta c_i (X^i-X).
+        A = subgroup(p, L)
+        # q(1)=0: q(x)=sum_{i=2}^delta c_i (x^i-x).
         # Domain multiplication by an A-root permutes evaluations; it does
         # not rescale their integer values or alter their multiplicities.
         evaluation_basis = np.array([
@@ -165,7 +164,7 @@ def polynomial_screen(survivors):
                 tail = [int(x) for x in coefficients_tail]
                 matches.append([(-sum(tail)) % p] + tail)
         output.append({
-            'p': p, 'j': j, 'k': k, 'target_multisets': len(targets),
+            'p': p, 'J': J, 'L': L, 'target_multisets': len(targets),
             'all_targets_contain_zero': True, 'normalized_polynomials_tested': tested,
             'matching_coefficients_q1_to_qdelta': matches,
         })
@@ -173,9 +172,9 @@ def polynomial_screen(survivors):
     return output
 
 
-def binary_kernel(p, j, k):
-    A, B = subgroup(p, k), subgroup(p, j)
-    n = p * k
+def binary_kernel(p, J, L):
+    A, B = subgroup(p, L), subgroup(p, J)
+    n = p * L
     rows = []
     for lam in B:
         for z in range(p):
@@ -236,7 +235,7 @@ def enumerate_boundary():
     assert witness is not None and witness.bit_count() == 16
     assert all((row & witness).bit_count() % 2 == 0 for row in rows)
     return {
-        'p': 13, 'j': 4, 'k': 6, 'n': n, 'rank': rank, 'dimension': len(basis),
+        'p': 13, 'J': 4, 'L': 6, 'n': n, 'rank': rank, 'dimension': len(basis),
         'enumerated_words': enumerated, 'minimum_distance': distance,
         'kernel_basis_hex': [hex(word) for word in basis],
         'weight16_witness_hex': hex(witness),
@@ -245,8 +244,8 @@ def enumerate_boundary():
 
 
 def ball_check():
-    p, j, k = 211, 3, 5
-    A, B = subgroup(p, k), subgroup(p, j)
+    p, J, L = 211, 3, 5
+    A, B = subgroup(p, L), subgroup(p, J)
     root = ('v', 1, 0)
     distance, parent = {root: 0}, {root: None}
     queue = deque([root])
@@ -267,7 +266,7 @@ def ball_check():
             elif parent[node] != neighbor and parent[neighbor] != node:
                 non_tree_edges.add(tuple(sorted((node, neighbor))))
     return {
-        'p': p, 'j': j, 'k': k, 'A': A, 'B': B,
+        'p': p, 'J': J, 'L': L, 'A': A, 'B': B,
         'layer_sizes': dict(sorted(Counter(distance.values()).items())),
         'non_tree_edges': len(non_tree_edges),
         'nodes': [{'node': list(node), 'distance': distance[node],
@@ -277,7 +276,7 @@ def ball_check():
 
 
 def coefficient_check():
-    # [X^5](1-X^5)/sqrt((1-X)(1-wX)), reduced modulo Phi_5(w).
+    # [x^5](1-x^5)/sqrt((1-x)(1-wx)), reduced modulo Phi_5(w).
     central = [Fraction(comb(2 * n, n), 4 ** n) for n in range(6)]
     coefficients = [central[5 - r] * central[r] for r in range(6)]
     coefficients[0] -= 1
@@ -286,7 +285,7 @@ def coefficient_check():
         coefficients[r] -= coefficients[4]  # w^4=-(1+w+w^2+w^3)
     reduced = coefficients[:4]
     assert reduced == [Fraction(-165, 256), 0, Fraction(-5, 256), Fraction(-5, 256)]
-    # t=w^2+w^3 satisfies t^2+t-1=0.  Vanishing requires t=-33.
+    # s=w^2+w^3 satisfies s^2+s-1=0. Vanishing requires s=-33.
     obstruction = (-33) ** 2 - 33 - 1
     assert obstruction == 5 * 211
     return {'reduced_coefficient_w0_to_w3': [str(x) for x in reduced],
