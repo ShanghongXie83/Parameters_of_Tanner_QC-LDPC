@@ -2,10 +2,10 @@
 
 These scripts reproduce the finite computations used in the proof of
 the minimum-distance bound $d \ge 2J+4$ for
-$J \ge 3$ and $1 \le L-J \le \min\{5,J-1\}$.
+$J \ge 3$ and $1 \le L-J \le \min(5,J-1)$.
 Each script runs independently and uses only the Python standard library.
 
-Here $\operatorname{Moore}(p,a,b)$ denotes the code with circulant
+Here `Moore(p,a,b)` denotes the code with circulant
 size $p$ and with $a$ and $b$ of multiplicative orders $L$ and $J$,
 respectively.
 
@@ -14,8 +14,7 @@ respectively.
 [screen_candidates.py](screen_candidates.py) enumerates the signed
 root-multiplicity multisets for the 69 pairs $(J,L)$ left by the
 proof. For each multiset, the script checks prime divisors of its
-second moment against $p>2L$, the divisibility condition
-$\operatorname{lcm}(J,L)\mid p-1$, and the remaining moment conditions.
+second moment against $p>2L$, the requirement that the least common multiple of $J$ and $L$ divides $p-1$, and the remaining moment conditions.
 
 ```sh
 python screen_candidates.py
